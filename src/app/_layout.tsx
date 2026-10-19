@@ -1,4 +1,3 @@
-
 import {
   DarkTheme,
   DefaultTheme,
@@ -34,7 +33,7 @@ export default function RootLayout() {
 
         <Stack.Screen
           name="explore"
-          options={{ title: "Explore" }}
+          options={{ title: "Panduan Edu Notes" }}
         />
       </Stack>
     </ThemeProvider>

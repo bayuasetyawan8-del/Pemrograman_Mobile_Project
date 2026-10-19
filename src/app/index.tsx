@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -8,6 +7,7 @@ import {
   FlatList,
   StyleSheet,
   Alert,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -40,15 +40,34 @@ export default function Index() {
     },
   ]);
 
-  const [jumlahCatatan, setJumlahCatatan] = useState(0);
+  const [jumlahCatatan, setJumlahCatatan] = useState(
+  catatan.length
+);
 
-  useEffect(() => {
-    setJumlahCatatan(catatan.length);
-  }, [catatan]);
+useEffect(() => {
+  setJumlahCatatan(catatan.length);
+}, [catatan]);
 
+  // Menampilkan pesan yang sesuai untuk web dan Android.
+  const tampilkanPesan = (judulPesan: string, pesan: string) => {
+    if (Platform.OS === "web") {
+      window.alert(`${judulPesan}\n\n${pesan}`);
+    } else {
+      Alert.alert(judulPesan, pesan);
+    }
+  };
+
+  // Menambahkan catatan baru.
   const tambahCatatan = () => {
-    if (!mataKuliah.trim() || !judul.trim() || !isi.trim()) {
-      Alert.alert("Peringatan", "Semua bagian harus diisi.");
+    if (
+      !mataKuliah.trim() ||
+      !judul.trim() ||
+      !isi.trim()
+    ) {
+      tampilkanPesan(
+        "Peringatan",
+        "Semua bagian harus diisi."
+      );
       return;
     }
 
@@ -59,34 +78,76 @@ export default function Index() {
       isi: isi.trim(),
     };
 
-    setCatatan((dataLama) => [...dataLama, catatanBaru]);
+    setCatatan((dataLama) => [
+      ...dataLama,
+      catatanBaru,
+    ]);
+
     setMataKuliah("");
     setJudul("");
     setIsi("");
 
-    Alert.alert("Berhasil", "Catatan berhasil ditambahkan.");
+    tampilkanPesan(
+      "Berhasil",
+      "Catatan berhasil ditambahkan."
+    );
   };
 
+  // Menghapus catatan setelah mendapatkan konfirmasi.
   const hapusCatatan = (id: string) => {
-    Alert.alert("Hapus Catatan", "Yakin ingin menghapus catatan ini?", [
-      { text: "Batal", style: "cancel" },
-      {
-        text: "Hapus",
-        style: "destructive",
-        onPress: () => {
-          setCatatan((dataLama) =>
-            dataLama.filter((item) => item.id !== id)
-          );
+    const prosesHapus = () => {
+      setCatatan((dataLama) =>
+        dataLama.filter((item) => item.id !== id)
+      );
+    };
+
+    if (Platform.OS === "web") {
+      const yakin = window.confirm(
+        "Yakin ingin menghapus catatan ini?"
+      );
+
+      if (yakin) {
+        prosesHapus();
+      }
+
+      return;
+    }
+
+    Alert.alert(
+      "Hapus Catatan",
+      "Yakin ingin menghapus catatan ini?",
+      [
+        {
+          text: "Batal",
+          style: "cancel",
         },
-      },
-    ]);
+        {
+          text: "Hapus",
+          style: "destructive",
+          onPress: prosesHapus,
+        },
+      ]
+    );
   };
 
-  const tampilkanCatatan = ({ item }: { item: Catatan }) => (
+  // Menampilkan setiap catatan beserta tombol aksinya.
+  const tampilkanCatatan = ({
+    item,
+  }: {
+    item: Catatan;
+  }) => (
     <View style={styles.card}>
-      <Text style={styles.mataKuliah}>{item.mataKuliah}</Text>
-      <Text style={styles.judul}>{item.judul}</Text>
-      <Text style={styles.isi}>{item.isi}</Text>
+      <Text style={styles.mataKuliah}>
+        {item.mataKuliah}
+      </Text>
+
+      <Text style={styles.judul}>
+        {item.judul}
+      </Text>
+
+      <Text style={styles.isi}>
+        {item.isi}
+      </Text>
 
       <View style={styles.tombolBaris}>
         <Pressable
@@ -103,72 +164,109 @@ export default function Index() {
             })
           }
         >
-          <Text style={styles.textTombol}>Lihat Detail</Text>
+          <Text style={styles.textTombol}>
+            Lihat Detail
+          </Text>
         </Pressable>
 
         <Pressable
           style={styles.tombolHapus}
           onPress={() => hapusCatatan(item.id)}
         >
-          <Text style={styles.textTombol}>Hapus</Text>
+          <Text style={styles.textTombol}>
+            Hapus
+          </Text>
         </Pressable>
       </View>
     </View>
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Catatan Kuliah</Text>
-      <Text style={styles.subHeader}>
-        Simpan catatan kuliahmu di sini
-      </Text>
+    <FlatList
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      data={catatan}
+      renderItem={tampilkanCatatan}
+      keyExtractor={(item) => item.id}
+      showsVerticalScrollIndicator={true}
+      keyboardShouldPersistTaps="handled"
+      ListHeaderComponent={
+        <>
+          <Text style={styles.header}>
+            Catatan Kuliah
+          </Text>
 
-      <Text style={styles.info}>
-        Total catatan: {jumlahCatatan}
-      </Text>
+          <Text style={styles.subHeader}>
+            Simpan catatan kuliahmu di sini
+          </Text>
 
-      <Text style={styles.label}>Mata Kuliah</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Contoh: Pemrograman Mobile"
-        value={mataKuliah}
-        onChangeText={setMataKuliah}
-      />
+        <Pressable
+            style={styles.tombolPanduan}
+            onPress={() => router.push("/explore")}>
 
-      <Text style={styles.label}>Judul Catatan</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Contoh: Belajar React Native"
-        value={judul}
-        onChangeText={setJudul}
-      />
+          <Text style={styles.textTombolPanduan}>
+            Panduan Penggunaan
+          </Text>
+        </Pressable>
 
-      <Text style={styles.label}>Isi Catatan</Text>
-      <TextInput
-        style={[styles.input, styles.inputIsi]}
-        placeholder="Tulis catatanmu di sini..."
-        value={isi}
-        onChangeText={setIsi}
-        multiline
-      />
+          <Text style={styles.info}>
+            Total catatan: {jumlahCatatan}
+          </Text>
 
-      <Pressable
-        style={styles.tombolTambah}
-        onPress={tambahCatatan}
-      >
-        <Text style={styles.textTombol}>+ Simpan Catatan</Text>
-      </Pressable>
+          <Text style={styles.label}>
+            Mata Kuliah
+          </Text>
 
-      <Text style={styles.daftar}>Daftar Catatan</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Contoh: Pemrograman Mobile"
+            value={mataKuliah}
+            onChangeText={setMataKuliah}
+          />
 
-      <FlatList
-        style={styles.list}
-        data={catatan}
-        renderItem={tampilkanCatatan}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+          <Text style={styles.label}>
+            Judul Catatan
+          </Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Contoh: Belajar React Native"
+            value={judul}
+            onChangeText={setJudul}
+          />
+
+          <Text style={styles.label}>
+            Isi Catatan
+          </Text>
+
+          <TextInput
+            style={[styles.input, styles.inputIsi]}
+            placeholder="Tulis catatanmu di sini..."
+            value={isi}
+            onChangeText={setIsi}
+            multiline
+          />
+
+          <Pressable
+            style={styles.tombolTambah}
+            onPress={tambahCatatan}
+          >
+            <Text style={styles.textTombol}>
+              + Simpan Catatan
+            </Text>
+          </Pressable>
+
+          <Text style={styles.daftar}>
+            Daftar Catatan
+          </Text>
+        </>
+      }
+      ListEmptyComponent={
+        <Text style={styles.kosong}>
+          Belum ada catatan. Silakan tambahkan catatan baru.
+        </Text>
+      }
+    />
   );
 }
 
@@ -176,8 +274,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F5F7FA",
+  },
+  contentContainer: {
     padding: 20,
-    paddingTop: 55,
+    paddingTop: 40,
+    paddingBottom: 32,
   },
   header: {
     fontSize: 28,
@@ -208,6 +309,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     fontSize: 15,
+    color: "#111827",
   },
   inputIsi: {
     height: 75,
@@ -227,11 +329,9 @@ const styles = StyleSheet.create({
   daftar: {
     fontSize: 20,
     fontWeight: "bold",
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  list: {
-    flex: 1,
+    color: "#111827",
+    marginTop: 20,
+    marginBottom: 12,
   },
   card: {
     backgroundColor: "#FFFFFF",
@@ -265,16 +365,36 @@ const styles = StyleSheet.create({
   },
   tombolDetail: {
     backgroundColor: "#2563EB",
-    padding: 9,
+    padding: 10,
     borderRadius: 8,
     flex: 1,
     alignItems: "center",
   },
   tombolHapus: {
     backgroundColor: "#EF4444",
-    padding: 9,
+    padding: 10,
     borderRadius: 8,
     flex: 1,
     alignItems: "center",
   },
+  kosong: {
+    color: "#6B7280",
+    fontSize: 14,
+    textAlign: "center",
+    paddingVertical: 20,
+  },
+
+  tombolPanduan: {
+  alignSelf: "flex-start",
+  backgroundColor: "#DBEAFE",
+  paddingVertical: 9,
+  paddingHorizontal: 12,
+  borderRadius: 8,
+  marginTop: 12,
+},
+textTombolPanduan: {
+  color: "#1D4ED8",
+  fontWeight: "bold",
+  fontSize: 13,
+},
 });

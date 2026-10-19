@@ -1,180 +1,188 @@
-import { Image } from 'expo-image';
-import { SymbolView } from 'expo-symbols';
-import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
+import { useRouter } from "expo-router";
 
-import { ExternalLink } from '@/components/external-link';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Collapsible } from '@/components/ui/collapsible';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
-
-export default function TabTwoScreen() {
-  const safeAreaInsets = useSafeAreaInsets();
-  const insets = {
-    ...safeAreaInsets,
-    bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
-  };
-  const theme = useTheme();
-
-  const contentPlatformStyle = Platform.select({
-    android: {
-      paddingTop: insets.top,
-      paddingLeft: insets.left,
-      paddingRight: insets.right,
-      paddingBottom: insets.bottom,
-    },
-    web: {
-      paddingTop: Spacing.six,
-      paddingBottom: Spacing.four,
-    },
-  });
+export default function ExploreScreen() {
+  const router = useRouter();
 
   return (
     <ScrollView
-      style={[styles.scrollView, { backgroundColor: theme.background }]}
-      contentInset={insets}
-      contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}>
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type="subtitle">Explore</ThemedText>
-          <ThemedText style={styles.centerText} themeColor="textSecondary">
-            This starter app includes example{'\n'}code to help you get started.
-          </ThemedText>
+      style={styles.screen}
+      contentContainerStyle={styles.container}
+    >
+      <Text style={styles.header}>
+        Panduan Penggunaan
+      </Text>
 
-          <ExternalLink href="https://docs.expo.dev" asChild>
-            <Pressable style={({ pressed }) => pressed && styles.pressed}>
-              <ThemedView type="backgroundElement" style={styles.linkButton}>
-                <ThemedText type="link">Expo documentation</ThemedText>
-                <SymbolView
-                  tintColor={theme.text}
-                  name={{ ios: 'arrow.up.right.square', android: 'link', web: 'link' }}
-                  size={12}
-                />
-              </ThemedView>
-            </Pressable>
-          </ExternalLink>
-        </ThemedView>
+      <Text style={styles.subtitle}>
+        Edu Notes - Catatan Kuliah
+      </Text>
 
-        <ThemedView style={styles.sectionsWrapper}>
-          <Collapsible title="File-based routing">
-            <ThemedText type="small">
-              This app has two screens: <ThemedText type="code">src/app/index.tsx</ThemedText> and{' '}
-              <ThemedText type="code">src/app/explore.tsx</ThemedText>
-            </ThemedText>
-            <ThemedText type="small">
-              The layout file in <ThemedText type="code">src/app/_layout.tsx</ThemedText> sets up
-              the tab navigator.
-            </ThemedText>
-            <ExternalLink href="https://docs.expo.dev/router/introduction">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
-            </ExternalLink>
-          </Collapsible>
+      <Text style={styles.description}>
+        Gunakan Edu Notes untuk mencatat dan mengelola
+        materi perkuliahanmu dengan mudah.
+      </Text>
 
-          <Collapsible title="Android, iOS, and web support">
-            <ThemedView type="backgroundElement" style={styles.collapsibleContent}>
-              <ThemedText type="small">
-                You can open this project on Android, iOS, and the web. To open the web version,
-                press <ThemedText type="smallBold">w</ThemedText> in the terminal running this
-                project.
-              </ThemedText>
-              <Image
-                source={require('@/assets/images/tutorial-web.png')}
-                style={styles.imageTutorial}
-              />
-            </ThemedView>
-          </Collapsible>
+      <View style={styles.card}>
+        <Text style={styles.number}>01</Text>
+        <Text style={styles.cardTitle}>
+          Menambahkan Catatan
+        </Text>
+        <Text style={styles.cardText}>
+          Isi nama mata kuliah, judul catatan, dan isi
+          catatan pada formulir di halaman utama.
+          Tekan tombol Simpan Catatan untuk menambahkan
+          catatan baru. Semua kolom wajib diisi.
+        </Text>
+      </View>
 
-          <Collapsible title="Images">
-            <ThemedText type="small">
-              For static images, you can use the <ThemedText type="code">@2x</ThemedText> and{' '}
-              <ThemedText type="code">@3x</ThemedText> suffixes to provide files for different
-              screen densities.
-            </ThemedText>
-            <Image source={require('@/assets/images/react-logo.png')} style={styles.imageReact} />
-            <ExternalLink href="https://reactnative.dev/docs/images">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
-            </ExternalLink>
-          </Collapsible>
+      <View style={styles.card}>
+        <Text style={styles.number}>02</Text>
+        <Text style={styles.cardTitle}>
+          Melihat Daftar Catatan
+        </Text>
+        <Text style={styles.cardText}>
+          Catatan yang tersedia akan ditampilkan pada
+          bagian Daftar Catatan. Jumlah catatan juga
+          ditampilkan pada halaman utama.
+        </Text>
+      </View>
 
-          <Collapsible title="Light and dark mode components">
-            <ThemedText type="small">
-              This template has light and dark mode support. The{' '}
-              <ThemedText type="code">useColorScheme()</ThemedText> hook lets you inspect what the
-              user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-            </ThemedText>
-            <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
-            </ExternalLink>
-          </Collapsible>
+      <View style={styles.card}>
+        <Text style={styles.number}>03</Text>
+        <Text style={styles.cardTitle}>
+          Melihat Detail Catatan
+        </Text>
+        <Text style={styles.cardText}>
+          Tekan tombol Lihat Detail pada salah satu
+          catatan untuk melihat informasi mata kuliah,
+          judul, dan isi catatan pada halaman detail.
+        </Text>
+      </View>
 
-          <Collapsible title="Animations">
-            <ThemedText type="small">
-              This template includes an example of an animated component. The{' '}
-              <ThemedText type="code">src/components/ui/collapsible.tsx</ThemedText> component uses
-              the powerful <ThemedText type="code">react-native-reanimated</ThemedText> library to
-              animate opening this hint.
-            </ThemedText>
-          </Collapsible>
-        </ThemedView>
-        {Platform.OS === 'web' && <WebBadge />}
-      </ThemedView>
+      <View style={styles.card}>
+        <Text style={styles.number}>04</Text>
+        <Text style={styles.cardTitle}>
+          Menghapus Catatan
+        </Text>
+        <Text style={styles.cardText}>
+          Tekan tombol Hapus pada catatan yang ingin
+          dihilangkan. Periksa pesan konfirmasi, lalu
+          pilih Hapus untuk melanjutkan atau Batal
+          untuk membatalkan tindakan.
+        </Text>
+      </View>
+
+      <View style={styles.note}>
+        <Text style={styles.noteTitle}>
+          Catatan Penting
+        </Text>
+        <Text style={styles.noteText}>
+          Pada versi saat ini, data catatan disimpan
+          sementara dalam state aplikasi. Catatan yang
+          ditambahkan belum tersimpan secara permanen
+          setelah aplikasi dimuat ulang.
+        </Text>
+      </View>
+
+      <Pressable
+        style={styles.homeButton}
+        onPress={() => router.replace("/")}
+      >
+        <Text style={styles.buttonText}>
+          Kembali ke Beranda
+        </Text>
+      </Pressable>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
+  screen: {
     flex: 1,
-  },
-  contentContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    backgroundColor: "#F5F7FA",
   },
   container: {
-    maxWidth: MaxContentWidth,
-    flexGrow: 1,
+    padding: 20,
+    paddingTop: 24,
+    paddingBottom: 36,
   },
-  titleContainer: {
-    gap: Spacing.three,
-    alignItems: 'center',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.six,
+  header: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#1F2937",
   },
-  centerText: {
-    textAlign: 'center',
+  subtitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#2563EB",
+    marginTop: 8,
   },
-  pressed: {
-    opacity: 0.7,
+  description: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: "#6B7280",
+    marginTop: 12,
+    marginBottom: 8,
   },
-  linkButton: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.two,
-    borderRadius: Spacing.five,
-    justifyContent: 'center',
-    gap: Spacing.one,
-    alignItems: 'center',
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    padding: 16,
+    marginTop: 14,
   },
-  sectionsWrapper: {
-    gap: Spacing.five,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.three,
+  number: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: "#2563EB",
   },
-  collapsibleContent: {
-    alignItems: 'center',
+  cardTitle: {
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "#1F2937",
+    marginTop: 6,
   },
-  imageTutorial: {
-    width: '100%',
-    aspectRatio: 296 / 171,
-    borderRadius: Spacing.three,
-    marginTop: Spacing.two,
+  cardText: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: "#4B5563",
+    marginTop: 8,
   },
-  imageReact: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
+  note: {
+    backgroundColor: "#EFF6FF",
+    borderRadius: 10,
+    padding: 15,
+    marginTop: 18,
+  },
+  noteTitle: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "#1D4ED8",
+  },
+  noteText: {
+    fontSize: 13,
+    lineHeight: 21,
+    color: "#374151",
+    marginTop: 6,
+  },
+  homeButton: {
+    backgroundColor: "#2563EB",
+    padding: 14,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 22,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 15,
   },
 });
