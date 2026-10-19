@@ -1,3 +1,7 @@
+# Expo HAS CHANGED
+
+Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before writing any code.
+=======
 This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
 
 ## Expo has changed — do not trust your training data
